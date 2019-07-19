@@ -1,0 +1,56 @@
+{% load static %}
+{% load customfilter %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/stylesheet.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <h1>DNA binding site</h1>
+    <br>
+
+    <form method="post" enctype="multipart/form-data" class="form">
+        {% csrf_token %}
+        <div class="form-group">
+          <input type="file" name="document" class="form-control-file" required>
+        </div>
+        <div class="form-group">
+          <select name="position">
+            <option value="100">100</option>
+            <option value="200">200</option>
+            <option value="500">500</option>
+            <option value="1000">1000</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <div class="output" style="padding:1%; width=100%;">
+      {% if posted %}
+        {% if zipped %}
+            <ul>
+              {% for item in zipped %}
+                <li>Accession ID: {{ item.0 }}<br>Sequence: {{ item.1 }}<br>Organism: {{ item.2 }}<br>Database: {{ item.3 }}<br>Locations: {{ item.4 }}<br>
+                <a href = '#{{item.5}}' data-toggle="collapse">Gene Sequence</a>
+                <div id='{{item.5}}' class="collapse" style=" overflow-wrap: break-word; word-wrap: break-word;">
+                  {{ gene_sequence|highlight:item.1}}
+                </div>
+                </li>
+              {% endfor %}
+            </ul>
+            <!--
+            {% with ''|add:figure_name as imagePath %}
+                <img src='{% static imagePath %}' style="width: 100%;"/>
+            {% endwith %}
+          -->
+        {% else %}
+          <p>No matches</p>
+        {% endif %}
+      {% endif %}
+    </div>
+  </body>
+</html>
